@@ -1,0 +1,17 @@
+# Arquivos de ambiente locais (Contêm chaves reais)
+.env
+.env.local
+.env.*
+
+# Chaves e certificados
+*.key
+*.pem
+id_rsa
+credentials.json
+
+# Diretórios de secrets (se houver)
+secrets/
+
+# Cache do Python
+__pycache__/
+*.pyc

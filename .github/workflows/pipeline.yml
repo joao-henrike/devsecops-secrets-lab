@@ -1,0 +1,41 @@
+name: Pipeline Seguro - DevSecOps
+
+on:
+  push:
+    branches: [main]
+
+# Security Hardening: Token efêmero restrito apenas para leitura de código
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Mapeamento do cofre: O runner puxa do GitHub Secrets e aloca no ambiente (SO)
+    env:
+      DATABASE_USER: ${{ secrets.DATABASE_USER }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      API_TOKEN: ${{ secrets.API_TOKEN }}
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validar injeção de ambiente
+        run: |
+          echo "[+] Auditoria de ambiente iniciada..."
+          if [ -z "${DATABASE_PASSWORD}" ]; then
+            echo "[-] FALHA: Segredos não mapeados no ambiente. Abortando pipeline."
+            exit 1
+          else
+            echo "[+] Sucesso: Cofre conectado e variáveis alocadas na memória do runner."
+          fi
+
+      - name: Executar Aplicação Securizada
+        run: python app/main.py

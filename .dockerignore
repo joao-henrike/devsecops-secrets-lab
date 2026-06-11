@@ -1,0 +1,10 @@
+# Regras de bloqueio rigorosas para o contexto do Docker
+.env
+.env.*
+.git
+.github
+*.key
+*.pem
+__pycache__/
+Dockerfile
+README.md
