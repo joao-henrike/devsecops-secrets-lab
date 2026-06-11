@@ -5,15 +5,12 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Security Hardening: Token efêmero restrito apenas para leitura de código
 permissions:
   contents: read
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    # Mapeamento do cofre: O runner puxa do GitHub Secrets e aloca no ambiente (SO)
     env:
       DATABASE_USER: ${{ secrets.DATABASE_USER }}
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
@@ -23,20 +20,26 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
       - name: Validar injeção de ambiente
         run: |
-          echo "[+] Auditoria de ambiente iniciada..."
           if [ -z "${DATABASE_PASSWORD}" ]; then
-            echo "[-] FALHA: Segredos não mapeados no ambiente. Abortando pipeline."
+            echo "[-] FALHA: Segredos não mapeados. Abortando."
             exit 1
-          else
-            echo "[+] Sucesso: Cofre conectado e variáveis alocadas na memória do runner."
           fi
 
       - name: Executar Aplicação Securizada
         run: python app/main.py
+
+      # --- NOVO HARDENING APLICADO: BUILD E SCAN ---
+      - name: Build da Imagem Docker local
+        run: docker build -t devsecops-secrets-lab:latest .
+
+      - name: Escaneamento de Vulnerabilidades (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'devsecops-secrets-lab:latest'
+          format: 'table'
+          exit-code: '1' # Falha a esteira se achar falha crítica
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
