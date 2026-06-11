@@ -3,6 +3,7 @@ name: Pipeline Seguro - DevSecOps
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 # Security Hardening: Token efêmero restrito apenas para leitura de código
 permissions:
