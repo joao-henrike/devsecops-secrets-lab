@@ -1,0 +1,14 @@
+=== INVENTÁRIO DE GOVERNANÇA DE SECRETS ===
+Data da Auditoria: 2026-06-11 19:59:40
+Repositório Alvo: joao-henrike/devsecops-secrets-lab
+Usuário Responsável (Actor): joao-henrike
+
+[ STATUS DOS SECRETS CADASTRADOS ]
+DATABASE_PASSWORD	2026-06-11T23:58:51Z
+DATABASE_USER	2026-06-11T22:02:11Z
+
+[ REGISTRO DE IMAGENS DOCKER LOCAIS ]
+REPOSITORY              TAG       CREATED AT
+devsecops-secrets-lab   latest    2026-06-11 17:49:06 -0400 EDT
+
+[ AUDITORIA CONCLUÍDA ]
